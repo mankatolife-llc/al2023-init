@@ -41,7 +41,7 @@
 #
 ###############################################################################
 
-INIT_VERSION="0.1.2"
+INIT_VERSION="0.1.3"
 
 set -euo pipefail
 
@@ -126,6 +126,8 @@ PACKAGES=(
 
   certbot
   python3-certbot-apache
+
+  vsftpd
 )
 
 for package in "${PACKAGES[@]}"
@@ -147,6 +149,8 @@ validate_command "php-fpm" "php-fpm -v"
 validate_command "mysqld" "mysqld --version"
 
 validate_command "certbot" "certbot --version"
+
+validate_command "vsftpd" "vsftpd -v"
 
 log "[PASS] Validation"
 
