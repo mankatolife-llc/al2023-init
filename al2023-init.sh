@@ -40,6 +40,9 @@
 # /root/INIT_FAILURE
 #
 ###############################################################################
+
+INIT_VERSION="0.1.1"
+
 set -euo pipefail
 
 RESULT_FILE="/root/INIT_IN_PROGRESS"
@@ -53,8 +56,13 @@ log() {
 }
 
 fail() {
+  log ""
+  log "Version: ${INIT_VERSION}"
+  log "Result: FAILURE"
+  log "Completed: $(date -u)"
   log "[FAIL] $1"
-  mv "${RESULT_FILE}" /root/INIT_FAILURE
+
+  mv "${RESULT_FILE}" /root/INIT_FAILURE || exit 1
   exit 1
 }
 
@@ -70,6 +78,7 @@ install_package() {
 
 log "AL2023 INIT REPORT"
 log "=================="
+log "Version: ${INIT_VERSION}"
 log "Started: $(date -u)"
 log ""
 
@@ -125,9 +134,10 @@ done
 log "[PASS] Validation"
 
 log ""
+log "Version: ${INIT_VERSION}"
 log "Result: SUCCESS"
 log "Completed: $(date -u)"
 
-mv "${RESULT_FILE}" /root/INIT_SUCCESS
+mv "${RESULT_FILE}" /root/INIT_SUCCESS || exit 1
 
 exit 0
