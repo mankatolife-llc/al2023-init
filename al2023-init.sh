@@ -12,7 +12,7 @@
 # ----------------
 # - Update the operating system
 # - Install universal Bedrock packages
-# - Validate package installation
+# - Validate installed capabilities
 # - Emit INIT_SUCCESS or INIT_FAILURE
 #
 # Non-Responsibilities
@@ -41,7 +41,7 @@
 #
 ###############################################################################
 
-INIT_VERSION="0.1.1"
+INIT_VERSION="0.1.2"
 
 set -euo pipefail
 
@@ -73,6 +73,17 @@ install_package() {
     log "[PASS] ${package}"
   else
     fail "${package} installation failed"
+  fi
+}
+
+validate_command() {
+  local name="$1"
+  local command="$2"
+
+  if eval "${command}" >/dev/null 2>&1; then
+    log "[PASS] ${name}"
+  else
+    fail "${name} validation failed"
   fi
 }
 
@@ -125,11 +136,17 @@ done
 log ""
 log "[INFO] Validation"
 
-for package in "${PACKAGES[@]}"
-do
-  rpm -q "${package}" >/dev/null 2>&1 \
-    || fail "${package} validation failed"
-done
+validate_command "git" "git --version"
+validate_command "jq" "jq --version"
+
+validate_command "httpd" "httpd -v"
+
+validate_command "php" "php -v"
+validate_command "php-fpm" "php-fpm -v"
+
+validate_command "mysqld" "mysqld --version"
+
+validate_command "certbot" "certbot --version"
 
 log "[PASS] Validation"
 
